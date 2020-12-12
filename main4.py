@@ -17,31 +17,48 @@ for nodes in range(10, 15):
             except:
                 pass
 
+nelder_old_betas = False
+nelder_old_gammas = False
 def nelder_mead(x):
     betas=[x[0]]
     gammas=[x[1]]
-    graph_qaoa = QAOA(betas, gammas, number_of_qubits, 1, w, graph)
+    if nelder_old_betas:
+        betas += old_betas
+        gammas += old_gammas
+    graph_qaoa = QAOA(betas, gammas, number_of_qubits, 2, w, graph)
     energy = graph_qaoa.get_expected_value()
     return float(energy)
 
+layer_1_dataset = np.load('dataset_3.npy', allow_pickle=True)
+old_betas = []
+old_gammas = []
+for i in range(150:160):
+    old_betas.append(layer_1_dataset[i][1])
+    old_gammas.append(layer_1_dataset[i][2])
 
-graph_dataset4 = [[] for _ in range(len(graph_instances))]
-cntr = 0
 
-for graph in graph_instances[150:200]:
+graph_dataset2_layer2 = [[] for _ in range(len(graph_instances))]
+cntr = 150
+
+for num in range(150:160):
     minimum_energy = 0
+    graph = graph_instances[num]
+    nelder_old_betas = old_betas[num]
+    nelder_old_gammas = old_gammas[num]
     for beta in np.linspace(0, 2*np.pi, 10):
         for gamma in np.linspace(0, np.pi, 6):
             number_of_qubits = len(graph.nodes())
-            w = nx.to_numpy_matrix(graph, nodelist=sorted(graph))
+            w = nx.to_numpy_matrix(graph, nodelist=sorted(graph.nodes()))
             minimum_energy_object = scipy.optimize.minimize(nelder_mead, x0=(beta, gamma), method='Nelder-Mead')
             if minimum_energy_object.fun < minimum_energy:
                 minimum_energy = minimum_energy_object.fun
                 optimal_beta = minimum_energy_object.x[0]
                 optimal_gamma = minimum_energy_object.x[1]
+                print('{}'.format(cntr))
     print("For the {} graph with Nelder Mead the minimum energy is {} with optimal beta:{} and optimal gamma: {}".format(cntr, minimum_energy, optimal_beta, optimal_gamma))           
-    graph_dataset4[cntr].append(minimum_energy, optimal_beta, optimal_gamma)
+    graph_dataset4_layer2[cntr].append(minimum_energy, optimal_beta, optimal_gamma)
     cntr += 1
 
-np.save('dataset_4.npy', np.array(graph_dataset4))
+np.save('dataset_4_layer2.npy', np.array(graph_dataset4_layer2))
+
 

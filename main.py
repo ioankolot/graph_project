@@ -25,7 +25,7 @@ def nelder_mead(x):
     if nelder_old_betas:
         betas += old_betas
         gammas += old_gammas
-    graph_qaoa = QAOA(betas, gammas, number_of_qubits, 1, w, graph)
+    graph_qaoa = QAOA(betas, gammas, number_of_qubits, 2, w, graph)
     energy = graph_qaoa.get_expected_value()
     return float(energy)
 
@@ -40,7 +40,7 @@ for i in range(50):
 graph_dataset1_layer2 = [[] for _ in range(len(graph_instances))]
 cntr = 0
 
-for num in range(1):
+for num in range(50):
     minimum_energy = 0
     graph = graph_instances[num]
     nelder_old_betas = old_betas[num]
