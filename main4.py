@@ -56,7 +56,11 @@ for num in range(150:160):
                 optimal_gamma = minimum_energy_object.x[1]
                 print('{}'.format(cntr))
     print("For the {} graph with Nelder Mead the minimum energy is {} with optimal beta:{} and optimal gamma: {}".format(cntr, minimum_energy, optimal_beta, optimal_gamma))           
-    graph_dataset4_layer2[cntr].append(minimum_energy, optimal_beta, optimal_gamma)
+    graph_dataset4_layer2[cntr].append(minimum_energy)
+    graph_dataset4_layer2[cntr].append(old_betas[num])
+    graph_dataset4_layer2[cntr].append(optimal_beta)
+    graph_dataset4_layer2[cntr].append(old_gammas[num])
+    graph_dataset4_layer2[cntr].append(optimal_gamma)
     cntr += 1
 
 np.save('dataset_4_layer2.npy', np.array(graph_dataset4_layer2))
