@@ -23,13 +23,13 @@ def nelder_mead(x):
     betas=[x[0]]
     gammas=[x[1]]
     if nelder_old_betas:
-        betas += old_betas
-        gammas += old_gammas
+        betas = nelder_old_betas + betas
+        gammas = nelder_old_gammas + gammas
     graph_qaoa = QAOA(betas, gammas, number_of_qubits, 2, w, graph)
     energy = graph_qaoa.get_expected_value()
     return float(energy)
 
-layer_1_dataset = np.load('dataset_1.npy', allow_pickle=True)
+layer_1_dataset = np.load('layer_1_dataset.npy', allow_pickle=True)
 old_betas = []
 old_gammas = []
 for i in range(50):
@@ -37,7 +37,7 @@ for i in range(50):
     old_gammas.append(layer_1_dataset[i][2])
 
 
-graph_dataset1_layer2 = [[] for _ in range(len(graph_instances))]
+graph_dataset1_layer2 = [[] for _ in range(50)]
 cntr = 0
 
 for num in range(50):
@@ -45,8 +45,8 @@ for num in range(50):
     graph = graph_instances[num]
     nelder_old_betas = old_betas[num]
     nelder_old_gammas = old_gammas[num]
-    for beta in np.linspace(0, 2*np.pi, 10):
-        for gamma in np.linspace(0, np.pi, 6):
+    for beta in np.linspace(0, np.pi, 6):
+        for gamma in np.linspace(0, 2*np.pi, 10):
             number_of_qubits = len(graph.nodes())
             w = nx.to_numpy_matrix(graph, nodelist=sorted(graph.nodes()))
             minimum_energy_object = scipy.optimize.minimize(nelder_mead, x0=(beta, gamma), method='Nelder-Mead')

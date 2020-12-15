@@ -23,13 +23,13 @@ def nelder_mead(x):
     betas=[x[0]]
     gammas=[x[1]]
     if nelder_old_betas:
-        betas += old_betas
-        gammas += old_gammas
+        betas = old_betas + betas
+        gammas = old_gammas + gammas
     graph_qaoa = QAOA(betas, gammas, number_of_qubits, 2, w, graph)
     energy = graph_qaoa.get_expected_value()
     return float(energy)
 
-layer_1_dataset = np.load('dataset_3.npy', allow_pickle=True)
+layer_1_dataset = np.load('layer_1_dataset.npy', allow_pickle=True)
 old_betas = []
 old_gammas = []
 for i in range(150:160):
@@ -37,14 +37,14 @@ for i in range(150:160):
     old_gammas.append(layer_1_dataset[i][2])
 
 
-graph_dataset2_layer2 = [[] for _ in range(len(graph_instances))]
-cntr = 150
+graph_dataset2_layer2 = [[] for _ in range(50)]
+cntr = 0
 
 for num in range(150:160):
     minimum_energy = 0
     graph = graph_instances[num]
-    nelder_old_betas = old_betas[num]
-    nelder_old_gammas = old_gammas[num]
+    nelder_old_betas = old_betas[num-150]
+    nelder_old_gammas = old_gammas[num-150]
     for beta in np.linspace(0, 2*np.pi, 10):
         for gamma in np.linspace(0, np.pi, 6):
             number_of_qubits = len(graph.nodes())
