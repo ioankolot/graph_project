@@ -45,8 +45,8 @@ for num in range(100:150):
     graph = graph_instances[num]
     nelder_old_betas = old_betas[num-100]
     nelder_old_gammas = old_gammas[num-100]
-    for beta in np.linspace(0, 2*np.pi, 10):
-        for gamma in np.linspace(0, np.pi, 6):
+    for beta in np.linspace(0, np.pi, 6):
+        for gamma in np.linspace(0, 2*np.pi, 10):
             number_of_qubits = len(graph.nodes())
             w = nx.to_numpy_matrix(graph, nodelist=sorted(graph.nodes()))
             minimum_energy_object = scipy.optimize.minimize(nelder_mead, x0=(beta, gamma), method='Nelder-Mead')
