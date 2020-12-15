@@ -43,8 +43,9 @@ cntr = 0
 for num in range(50):
     minimum_energy = 0
     graph = graph_instances[num]
-    nelder_old_betas = old_betas[num]
-    nelder_old_gammas = old_gammas[num]
+    print(graph)
+    nelder_old_betas = [old_betas[num]]
+    nelder_old_gammas = [old_gammas[num]]
     for beta in np.linspace(0, np.pi, 6):
         for gamma in np.linspace(0, 2*np.pi, 10):
             number_of_qubits = len(graph.nodes())
@@ -64,4 +65,3 @@ for num in range(50):
     cntr += 1
 
 np.save('dataset_1_layer2.npy', np.array(graph_dataset1_layer2))
-
