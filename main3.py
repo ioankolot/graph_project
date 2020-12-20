@@ -25,22 +25,24 @@ def nelder_mead(x):
     if nelder_old_betas:
         betas = nelder_old_betas + betas
         gammas = nelder_old_gammas + gammas
-    graph_qaoa = QAOA(betas, gammas, number_of_qubits, 2, w, graph)
+    graph_qaoa = QAOA(betas, gammas, number_of_qubits, 3, w, graph)
     energy = graph_qaoa.get_expected_value()
     return float(energy)
 
-layer_1_dataset = np.load('layer_1_dataset.npy', allow_pickle=True)
-old_betas = []
-old_gammas = []
-for i in range(100:150):
-    old_betas.append(layer_1_dataset[i][1])
-    old_gammas.append(layer_1_dataset[i][2])
+layer_2_dataset = np.load('layer_2_dataset.npy', allow_pickle=True)
+old_betas = [[] for _ in range(50)]
+old_gammas = [[] for _ in range(50)]
+for i in range(100,150):
+    old_betas[i-100].append(layer_2_dataset[i][1])
+    old_betas[i-100].append(layer_2_dataset[i][2])
+    old_gammas[i-100].append(layer_2_dataset[i][3])
+    old_gammas[i-100].append(layer_2_dataset[i][4])
 
 
-graph_dataset2_layer2 = [[] for _ in range(50)]
+graph_dataset3_layer3 = [[] for _ in range(50)]
 cntr = 0
 
-for num in range(100:150):
+for num in range(100,150):
     minimum_energy = 0
     graph = graph_instances[num]
     nelder_old_betas = [old_betas[num-100]]
@@ -56,11 +58,11 @@ for num in range(100:150):
                 optimal_gamma = minimum_energy_object.x[1]
                 print('{}'.format(cntr))
     print("For the {} graph with Nelder Mead the minimum energy is {} with optimal beta:{} and optimal gamma: {}".format(cntr, minimum_energy, optimal_beta, optimal_gamma))           
-    graph_dataset3_layer2[cntr].append(minimum_energy)
-    graph_dataset3_layer2[cntr].append(old_betas[num])
-    graph_dataset3_layer2[cntr].append(optimal_beta)
-    graph_dataset3_layer2[cntr].append(old_gammas[num])
-    graph_dataset3_layer2[cntr].append(optimal_gamma)
+    graph_dataset3_layer3[cntr].append(minimum_energy)
+    graph_dataset3_layer3[cntr].append(old_betas[num])
+    graph_dataset3_layer3[cntr].append(optimal_beta)
+    graph_dataset3_layer3[cntr].append(old_gammas[num])
+    graph_dataset3_layer3[cntr].append(optimal_gamma)
     cntr += 1
 
-np.save('dataset_3_layer2.npy', np.array(graph_dataset3_layer2))
+np.save('dataset_3_layer3.npy', np.array(graph_dataset3_layer3))

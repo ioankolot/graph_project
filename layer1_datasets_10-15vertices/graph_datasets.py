@@ -18,4 +18,6 @@ for l in range(110):
     dataset1[50+l] = dataset2[l]
 
 
-np.save('layer_1_dataset.npy', np.array(dataset1))
+kol = np.load('layer_1_dataset.npy', allow_pickle=True)
+
+print(-20.66/optimal_dataset[45])

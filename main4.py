@@ -17,34 +17,27 @@ for nodes in range(10, 15):
             except:
                 pass
 
-nelder_old_betas = False
-nelder_old_gammas = False
+
 def nelder_mead(x):
     betas=[x[0]]
     gammas=[x[1]]
-    if nelder_old_betas:
-        betas = old_betas + betas
-        gammas = old_gammas + gammas
-    graph_qaoa = QAOA(betas, gammas, number_of_qubits, 2, w, graph)
+    graph_qaoa = QAOA(betas, gammas, number_of_qubits, 1, w, graph)
     energy = graph_qaoa.get_expected_value()
     return float(energy)
 
 layer_1_dataset = np.load('layer_1_dataset.npy', allow_pickle=True)
 old_betas = []
 old_gammas = []
-for i in range(150:160):
+for i in range(150,160):
     old_betas.append(layer_1_dataset[i][1])
     old_gammas.append(layer_1_dataset[i][2])
 
-
-graph_dataset2_layer2 = [[] for _ in range(50)]
+graph_dataset4_layer1 = [[] for _ in range(10)]
 cntr = 0
 
-for num in range(150:160):
+for num in range(150,160):
     minimum_energy = 0
     graph = graph_instances[num]
-    nelder_old_betas = [old_betas[num-150]]
-    nelder_old_gammas = [old_gammas[num-150]]
     for beta in np.linspace(0, np.pi, 6):
         for gamma in np.linspace(0, 2*np.pi, 10):
             number_of_qubits = len(graph.nodes())
@@ -56,13 +49,11 @@ for num in range(150:160):
                 optimal_gamma = minimum_energy_object.x[1]
                 print('{}'.format(cntr))
     print("For the {} graph with Nelder Mead the minimum energy is {} with optimal beta:{} and optimal gamma: {}".format(cntr, minimum_energy, optimal_beta, optimal_gamma))           
-    graph_dataset4_layer2[cntr].append(minimum_energy)
-    graph_dataset4_layer2[cntr].append(old_betas[num])
-    graph_dataset4_layer2[cntr].append(optimal_beta)
-    graph_dataset4_layer2[cntr].append(old_gammas[num])
-    graph_dataset4_layer2[cntr].append(optimal_gamma)
+    graph_dataset4_layer1[cntr].append(minimum_energy)
+    graph_dataset4_layer1[cntr].append(optimal_beta)
+    graph_dataset4_layer1[cntr].append(optimal_gamma)
     cntr += 1
 
-np.save('dataset_4_layer2.npy', np.array(graph_dataset4_layer2))
+np.save('dataset_4_layer1.npy', np.array(graph_dataset4_layer1))
 
 
