@@ -19,4 +19,5 @@ for l in range(110):
 
 dataset1 = np.array(dataset1)
 
-np.save('layer_2_dataset.npy', dataset1)
+
+print(-13/optimal_dataset[85])

@@ -18,7 +18,6 @@ for nodes in range(10, 15):
                 pass
 
 
-
 nelder_old_betas = False
 nelder_old_gammas = False
 def nelder_mead(x):
@@ -27,28 +26,26 @@ def nelder_mead(x):
     if nelder_old_betas:
         betas = nelder_old_betas + betas
         gammas = nelder_old_gammas + gammas
-    graph_qaoa = QAOA(betas, gammas, number_of_qubits, 3, w, graph)
+    graph_qaoa = QAOA(betas, gammas, number_of_qubits, 4, w, graph)
     energy = graph_qaoa.get_expected_value()
     return float(energy)
 
-layer_2_dataset = np.load('layer_2_dataset.npy', allow_pickle=True)
+layer_3_dataset = np.load('layer_3_dataset.npy', allow_pickle=True)
 old_betas = [[] for _ in range(50)]
 old_gammas = [[] for _ in range(50)]
 for i in range(50,100):
-    old_betas[i-50].append(layer_2_dataset[i][1])
-    old_betas[i-50].append(layer_2_dataset[i][2])
-    old_gammas[i-50].append(layer_2_dataset[i][3])
-    old_gammas[i-50].append(layer_2_dataset[i][2])
+    old_betas[i-50].append(layer_3_dataset[i][1] + [layer_3_dataset[i][2]])
+    old_gammas[i-50].append(layer_3_dataset[i][3] + [layer_3_dataset[i][2]])
 
 
-graph_dataset2_layer3 = [[] for _ in range(50)]
+graph_dataset2_layer4 = [[] for _ in range(50)]
 cntr = 0
 
 for num in range(50,100):
     minimum_energy = 0
     graph = graph_instances[num]
-    nelder_old_betas = [old_betas[num-50]]
-    nelder_old_gammas = [old_gammas[num-50]]
+    nelder_old_betas = old_betas[num-50][0]
+    nelder_old_gammas = old_gammas[num-50][0]
     for beta in np.linspace(0, np.pi, 6):
         for gamma in np.linspace(0, 2*np.pi, 10):
             number_of_qubits = len(graph.nodes())
@@ -60,11 +57,11 @@ for num in range(50,100):
                 optimal_gamma = minimum_energy_object.x[1]
                 print('{}'.format(cntr))
     print("For the {} graph with Nelder Mead the minimum energy is {} with optimal beta:{} and optimal gamma: {}".format(cntr, minimum_energy, optimal_beta, optimal_gamma))           
-    graph_dataset2_layer3[cntr].append(minimum_energy)
-    graph_dataset2_layer3[cntr].append(old_betas[num])
-    graph_dataset2_layer3[cntr].append(optimal_beta)
-    graph_dataset2_layer3[cntr].append(old_gammas[num])
-    graph_dataset2_layer3[cntr].append(optimal_gamma)
+    graph_dataset2_layer4[cntr].append(minimum_energy)
+    graph_dataset2_layer4[cntr].append(old_betas[num-50][0])
+    graph_dataset2_layer4[cntr].append(optimal_beta)
+    graph_dataset2_layer4[cntr].append(old_gammas[num-50][0])
+    graph_dataset2_layer4[cntr].append(optimal_gamma)
     cntr += 1
 
-np.save('dataset_2_layer3.npy', np.array(graph_dataset2_layer3))
+np.save('dataset_2_layer4.npy', np.array(graph_dataset2_layer4))
